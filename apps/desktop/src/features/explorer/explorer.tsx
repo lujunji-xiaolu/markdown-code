@@ -10,6 +10,7 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import OpenFolder from "./open-folder";
 import { Dir, File } from "./types";
 import { findParentDir } from "./utils";
+import { invoke } from "@tauri-apps/api/tauri";
 
 export default function Explorer() {
   const [rootDir, setRootDir] = useRecoilState(rootDirState);
@@ -33,6 +34,7 @@ export default function Explorer() {
           fileName: file_name,
           dirs: [],
           files: [],
+          components: [],
         };
       } else {
         const parentDir = findParentDir(rootDir!, components);
@@ -40,11 +42,13 @@ export default function Explorer() {
           parentDir.files.push({
             path,
             fileName: file_name,
+            components,
           });
         } else {
           parentDir.dirs.push({
             path,
             fileName: file_name,
+            components,
             dirs: [],
             files: [],
           });
@@ -58,28 +62,36 @@ export default function Explorer() {
 
   if (rootDir === null) return <OpenFolder />;
 
-  const pushTab = (file: File) => {
-    setEditorGroups((oldEditorGroups) => {
-      if (
-        oldEditorGroups.groups[oldEditorGroups.currentGroupIndex] === undefined
-      ) {
-        oldEditorGroups.groups[oldEditorGroups.currentGroupIndex] = {
-          tabs: [],
-          currentTabIndex: 0,
-        };
-      }
-
-      const oldEditorGroup =
-        oldEditorGroups.groups[oldEditorGroups.currentGroupIndex];
-
-      oldEditorGroup.tabs.push({
-        editor: createEditor(),
-        value: deserialize(""),
-        file,
+  const pushTab = async (file: File) => {
+    try {
+      const content = await invoke<string>("read_to_string", {
+        path: file.path,
       });
+      setEditorGroups((oldEditorGroups) => {
+        if (
+          oldEditorGroups.groups[oldEditorGroups.currentGroupIndex] ===
+          undefined
+        ) {
+          oldEditorGroups.groups[oldEditorGroups.currentGroupIndex] = {
+            tabs: [],
+            currentTabIndex: 0,
+          };
+        }
 
-      return { ...oldEditorGroups };
-    });
+        const oldEditorGroup =
+          oldEditorGroups.groups[oldEditorGroups.currentGroupIndex];
+
+        oldEditorGroup.tabs.push({
+          editor: createEditor(),
+          value: deserialize(content),
+          file,
+        });
+
+        return { ...oldEditorGroups };
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const renderFile = (dir: Dir) =>
@@ -104,6 +116,7 @@ export default function Explorer() {
       aria-label="file system navigator"
       defaultCollapseIcon={<ExpandMoreIcon />}
       defaultExpandIcon={<ChevronRightIcon />}
+      sx={{ overflowX: "hidden", overflowY: "auto" }}
       // sx={{ height: 240, flexGrow: 1, maxWidth: 400, overflowY: "auto" }}
     >
       {renderDir(rootDir)}

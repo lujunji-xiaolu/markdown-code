@@ -1,4 +1,5 @@
 use crate::state::Database;
+use std::fs;
 use std::path::Path;
 use std::sync::Mutex;
 use tauri::api::dialog::blocking::FileDialogBuilder;
@@ -78,5 +79,30 @@ pub async fn open_folder(
             Ok(Some(picked_dir))
         }
         None => Ok(None),
+    }
+}
+
+#[tauri::command]
+pub async fn read_to_string(
+    window: tauri::Window,
+    database: tauri::State<'_, Mutex<Database>>,
+    path: String,
+) -> Result<String, String> {
+    match database.lock().unwrap().opened_dirs.get(window.label()) {
+        Some(opened_dir) => {
+            if path.starts_with(opened_dir) {
+                if Path::new(&path).exists() {
+                    match fs::read_to_string(path) {
+                        Ok(content) => Ok(content),
+                        Err(error) => Err(error.to_string()),
+                    }
+                } else {
+                    Err("File does not exist.".to_string())
+                }
+            } else {
+                Err("You do not have permission to read the contents of this file.".to_string())
+            }
+        }
+        None => Err("You have not yet opened a folder.".to_string()),
     }
 }

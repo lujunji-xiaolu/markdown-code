@@ -42,7 +42,10 @@ fn main() {
 
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![explorer::open_folder])
+        .invoke_handler(tauri::generate_handler![
+            explorer::open_folder,
+            explorer::read_to_string
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

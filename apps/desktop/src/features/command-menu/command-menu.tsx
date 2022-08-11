@@ -1,4 +1,4 @@
-import { anchorPointState, currentEditorState } from "@/atoms";
+import { anchorPointState, currentTabState } from "@/atoms";
 import ContextMenu from "@/components/context-menu";
 import MenuItem from "@/components/menu-item";
 import { useMenuState } from "@szhsin/react-menu";
@@ -11,7 +11,7 @@ const DEFAULT_ANCHOR_POINT = { x: 0, y: 0 };
 export default function CommandMenu() {
   const [menuProps, toggleMenu] = useMenuState();
   const [anchorPoint, setAnchorPoint] = useRecoilState(anchorPointState);
-  const currentEditor = useRecoilValue(currentEditorState);
+  const currentTab = useRecoilValue(currentTabState);
 
   const handleClose = () => {
     toggleMenu(false);
@@ -22,8 +22,11 @@ export default function CommandMenu() {
   }, [anchorPoint]);
 
   const insertHTMLBlock = () => {
-    if (currentEditor) {
-      Transforms.insertNodes(currentEditor, { type: "thematicBreak", children: [{ text: "" }] });
+    if (currentTab?.editor) {
+      Transforms.insertNodes(currentTab.editor, {
+        type: "thematicBreak",
+        children: [{ text: "" }],
+      });
     }
   };
 

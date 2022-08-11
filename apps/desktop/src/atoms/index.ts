@@ -25,14 +25,14 @@ export const editorGroupsState = atom<EditorGroups>({
   dangerouslyAllowMutability: true,
 });
 
-export const currentEditorState = selector({
-  key: "currentEditor",
+export const currentTabState = selector({
+  key: "currentTab",
   get: ({ get }) => {
     const editorGroups = get(editorGroupsState);
     const editorGroup = editorGroups.groups[editorGroups.currentGroupIndex];
     if (editorGroup !== undefined) {
-      const tab = editorGroup.tabs[editorGroup.currentTabIndex];
-      if (tab !== undefined) return tab.editor;
+      const tab = editorGroup.tabs[editorGroup.currentTabIndex] ?? null;
+      return tab;
     }
     return null;
   },

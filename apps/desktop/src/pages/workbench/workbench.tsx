@@ -12,8 +12,9 @@ import Breadcrumbs from "@mui/material/Breadcrumbs";
 import { styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
-import { useRecoilState } from "recoil";
-import { editorGroupsState } from "@/atoms";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { currentTabState, editorGroupsState } from "@/atoms";
+import Box from "@mui/material/Box";
 
 const FlexBox = styled("div")({
   display: "flex",
@@ -37,6 +38,8 @@ const StyledListItem = styled(ListItem)({
 });
 
 const SideBar = styled(Card)({
+  display: "flex",
+  flexDirection: "column",
   flexShrink: 0,
   width: 230,
 });
@@ -55,7 +58,9 @@ const CardHeader = styled("div")(({ theme }) => ({
 }));
 
 const SideBarContent = styled("div")({
+  flex: 1,
   padding: 12,
+  overflowY: "auto",
 });
 
 const DragBar = styled("div")({
@@ -86,6 +91,8 @@ const Breadcrumb = styled(Typography)(({ theme }) => ({
 
 function Workbench() {
   const [selectedIndex, setSelectedIndex] = React.useState(0);
+
+  const currentTab = useRecoilValue(currentTabState);
 
   const targetRef = React.useRef<HTMLDivElement>(null);
   const dragBarRef = React.useRef<HTMLDivElement>(null);
@@ -137,9 +144,11 @@ function Workbench() {
   };
 
   return (
-    <FlexBox sx={{ flexDirection: "column", height: "100vh" }}>
+    <Box sx={{ height: "100vh" }}>
       <MenuBar />
-      <FlexBox sx={{ flex: 1, paddingRight: "4px" }}>
+      <FlexBox
+        sx={{ height: "calc(100vh - 78px)", flex: 1, paddingRight: "4px" }}
+      >
         <ActivityBar>
           <StyledListItem
             selected={selectedIndex === 0}
@@ -200,9 +209,11 @@ function Workbench() {
                   }
                   aria-label="breadcrumb"
                 >
-                  <Breadcrumb variant="body2">selectionSort</Breadcrumb>
-                  <Breadcrumb variant="body2">find_smallest</Breadcrumb>
-                  <Breadcrumb variant="body2">smallest_index</Breadcrumb>
+                  {currentTab?.file.components.map((component, index) => (
+                    <Breadcrumb key={`${component}-${index}`} variant="body2">
+                      {component}
+                    </Breadcrumb>
+                  ))}
                 </Breadcrumbs>
               </CardHeader>
               {editorGroup.tabs.map((tab, tabIndex) => (
@@ -221,7 +232,7 @@ function Workbench() {
         <CommandMenu />
       </FlexBox>
       <StatusBar></StatusBar>
-    </FlexBox>
+    </Box>
   );
 }
 
