@@ -1,16 +1,17 @@
-import { editorGroupsState, rootDirState } from "@/atoms";
-import { createEditor, deserialize } from "@/features/editor";
+import { createEditor, deserialize } from "@/pages/workbench/features/editor";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { TreeView } from "@mui/lab";
 import TreeItem from "@mui/lab/TreeItem";
+import { invoke } from "@tauri-apps/api/tauri";
 import { appWindow } from "@tauri-apps/api/window";
 import * as React from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
+import { editorGroupsState } from "../../atoms/editor-group";
+import { rootDirState } from "../../atoms/explorer";
 import OpenFolder from "./open-folder";
 import { Dir, File } from "./types";
 import { findParentDir } from "./utils";
-import { invoke } from "@tauri-apps/api/tauri";
 
 export default function Explorer() {
   const [rootDir, setRootDir] = useRecoilState(rootDirState);
@@ -74,7 +75,7 @@ export default function Explorer() {
         ) {
           oldEditorGroups.groups[oldEditorGroups.currentGroupIndex] = {
             tabs: [],
-            currentTabIndex: 0,
+            activeIndex: 0,
           };
         }
 

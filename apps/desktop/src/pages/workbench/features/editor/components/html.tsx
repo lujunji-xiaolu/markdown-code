@@ -1,4 +1,4 @@
-import { rootDirState } from "@/atoms";
+import { rootDirState } from "@/pages/workbench/atoms/explorer";
 import { html } from "@codemirror/lang-html";
 import { EditorState } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
@@ -50,7 +50,7 @@ function getImageSrc(src: string, rootDirPath?: string) {
 
 const HTMLRoot = styled("div")({
   position: "relative",
-  overflow: 'hidden',
+  overflow: "hidden",
   "& .preview-toggle-button": {
     position: "absolute",
     top: 0,
