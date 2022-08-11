@@ -8,16 +8,20 @@ import { RecoilRoot } from "recoil";
 import "./App.css";
 
 class StyleIsolation extends HTMLElement {
-  connectedCallback() {
+  constructor() {
+    super();
+
     const shadowRoot = this.attachShadow({ mode: "open" });
-    const style = document.createElement("style");
-    style.textContent = `
-    a {
-      text-decoration: none;
-    }
+
+    shadowRoot.innerHTML = `
+      <style>
+        :host {
+          all: initial;
+        }
+      </style>
+
+      <slot></slot>
     `;
-    shadowRoot.appendChild(style);
-    Array.from(this.children).forEach((child) => shadowRoot.appendChild(child));
   }
 }
 

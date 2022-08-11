@@ -142,22 +142,18 @@ export default function HTML(props: RenderElementProps) {
       </IconButton>
       {preview && (
         <style-isolation>
-          <div>
-            {parse(DOMPurify.sanitize(value), {
-              replace: (domNode) => {
-                if (
-                  domNode instanceof Element &&
-                  domNode.tagName === "img" &&
-                  domNode.attribs
-                ) {
-                  const { src, ...other } = attributesToProps(domNode.attribs);
-                  return (
-                    <img src={getImageSrc(src, rootDir?.path)} {...other} />
-                  );
-                }
-              },
-            })}
-          </div>
+          {parse(DOMPurify.sanitize(value), {
+            replace: (domNode) => {
+              if (
+                domNode instanceof Element &&
+                domNode.tagName === "img" &&
+                domNode.attribs
+              ) {
+                const { src, ...other } = attributesToProps(domNode.attribs);
+                return <img src={getImageSrc(src, rootDir?.path)} {...other} />;
+              }
+            },
+          })}
         </style-isolation>
       )}
       <CodeMirrorParent
