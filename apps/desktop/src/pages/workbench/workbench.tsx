@@ -1,6 +1,5 @@
+import { currentTabState, editorGroupsState } from "@/atoms";
 import Card from "@/components/card";
-import FilesIcon from "@/components/icons/files";
-import ListItem from "@/components/list-item";
 import SegoeFluentIcon from "@/components/segoe-fluent-icon";
 import Tab from "@/components/tab";
 import Tabs from "@/components/tabs";
@@ -8,33 +7,17 @@ import CommandMenu from "@/features/command-menu";
 import Editor from "@/features/editor";
 import Explorer from "@/features/explorer";
 import MenuBar from "@/features/menu-bar";
+import Box from "@mui/material/Box";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import { styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { currentTabState, editorGroupsState } from "@/atoms";
-import Box from "@mui/material/Box";
+import { selectedItemIndexState } from "./atoms/layout";
+import ActivityBar from "./features/activity-bar";
 
 const FlexBox = styled("div")({
   display: "flex",
-});
-
-const ActivityBar = styled("div")({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  width: 48,
-});
-
-const StyledListItem = styled(ListItem)({
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  width: 40,
-  height: 40,
-  margin: 0,
-  marginBottom: 4,
 });
 
 const SideBar = styled(Card)({
@@ -90,7 +73,7 @@ const Breadcrumb = styled(Typography)(({ theme }) => ({
 }));
 
 function Workbench() {
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const selectedIndex = useRecoilValue(selectedItemIndexState);
 
   const currentTab = useRecoilValue(currentTabState);
 
@@ -149,20 +132,7 @@ function Workbench() {
       <FlexBox
         sx={{ height: "calc(100vh - 78px)", flex: 1, paddingRight: "4px" }}
       >
-        <ActivityBar>
-          <StyledListItem
-            selected={selectedIndex === 0}
-            onClick={() => setSelectedIndex(0)}
-          >
-            <FilesIcon fontSize="small" />
-          </StyledListItem>
-          <StyledListItem
-            selected={selectedIndex === 1}
-            onClick={() => setSelectedIndex(1)}
-          >
-            <SegoeFluentIcon name="Search" sx={{ fontSize: 20 }} />
-          </StyledListItem>
-        </ActivityBar>
+        <ActivityBar></ActivityBar>
         <SideBar ref={targetRef}>
           <CardHeader>
             <Typography variant="body2" sx={{ fontWeight: "bold" }}>
