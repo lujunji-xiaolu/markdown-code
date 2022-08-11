@@ -185,7 +185,7 @@ function Workbench() {
                   onClick={() => setCurrentTabIndex(index, tabIndex)}
                   onClose={() => handleCloseTab(index, tabIndex)}
                 >
-                  {tab.file.basename}
+                  {tab.file.fileName}
                 </Tab>
               ))}
             </Tabs>

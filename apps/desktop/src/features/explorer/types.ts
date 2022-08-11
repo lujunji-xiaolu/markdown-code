@@ -1,7 +1,6 @@
 export interface File {
   path: string;
   fileName: string;
-  content: string;
 }
 
 export interface Dir {
