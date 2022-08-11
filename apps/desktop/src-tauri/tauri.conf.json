@@ -19,6 +19,11 @@
         "message": false,
         "open": true,
         "save": false
+      },
+      "protocol": {
+        "all": false,
+        "asset": true,
+        "assetScope": ["*"]
       }
     },
     "bundle": {
@@ -55,7 +60,7 @@
       }
     },
     "security": {
-      "csp": null
+      "csp": "default-src 'self'; img-src 'self' asset: https://asset.localhost"
     },
     "updater": {
       "active": false
