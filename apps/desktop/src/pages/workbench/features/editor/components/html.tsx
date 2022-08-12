@@ -1,4 +1,5 @@
 import { rootDirState } from "@/pages/workbench/atoms/explorer";
+import "@/pages/workbench/components/style-isolation";
 import { html } from "@codemirror/lang-html";
 import { EditorState } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
@@ -7,6 +8,7 @@ import PreviewIcon from "@mui/icons-material/Preview";
 import IconButton from "@mui/material/IconButton";
 import { styled } from "@mui/material/styles";
 import { sep } from "@tauri-apps/api/path";
+import { convertFileSrc } from "@tauri-apps/api/tauri";
 import DOMPurify from "dompurify";
 import parse, { attributesToProps, Element } from "html-react-parser";
 import * as React from "react";
@@ -15,7 +17,6 @@ import { Transforms } from "slate";
 import { ReactEditor, RenderElementProps, useSlateStatic } from "slate-react";
 import { HTML as IHTML } from "../spec/common-mark";
 import { basicSetup } from "./code";
-import { convertFileSrc } from "@tauri-apps/api/tauri";
 
 function getImageSrc(src: string, rootDirPath?: string) {
   const EXT_REG = /\.(jpeg|jpg|png|gif|svg|webp)(?=\?|$)/i;
