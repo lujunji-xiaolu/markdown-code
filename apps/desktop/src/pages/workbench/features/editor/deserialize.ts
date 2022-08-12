@@ -46,6 +46,7 @@ function transform(node: Content): unknown {
       return {
         type: "html",
         value: node.value,
+        preview: true,
         children: [{ text: "" }],
       };
     case "code":
@@ -92,9 +93,15 @@ function transform(node: Content): unknown {
         children: node.children.map((child) => transform(child)),
       };
     case "tableRow":
-      return { type: "tableRow", children: node.children.map((child) => transform(child)) };
+      return {
+        type: "tableRow",
+        children: node.children.map((child) => transform(child)),
+      };
     case "tableCell":
-      return { type: "tableCell", children: node.children.map((child) => transform(child)) };
+      return {
+        type: "tableCell",
+        children: node.children.map((child) => transform(child)),
+      };
     default:
       console.log(node);
       break;

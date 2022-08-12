@@ -1,22 +1,23 @@
+import Card from "@/components/card";
 import { rootDirState } from "@/pages/workbench/atoms/explorer";
 import "@/pages/workbench/components/style-isolation";
-import { html } from "@codemirror/lang-html";
-import { EditorState } from "@codemirror/state";
-import { EditorView } from "@codemirror/view";
-import CodeIcon from "@mui/icons-material/Code";
-import PreviewIcon from "@mui/icons-material/Preview";
-import IconButton from "@mui/material/IconButton";
 import { styled } from "@mui/material/styles";
 import { sep } from "@tauri-apps/api/path";
 import { convertFileSrc } from "@tauri-apps/api/tauri";
 import DOMPurify from "dompurify";
 import parse, { attributesToProps, Element } from "html-react-parser";
 import * as React from "react";
-import { useRecoilValue } from "recoil";
-import { Transforms } from "slate";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { ReactEditor, RenderElementProps, useSlateStatic } from "slate-react";
-import { HTML as IHTML } from "../spec/common-mark";
-import { basicSetup } from "./code";
+import { contextMenuState } from "../atoms";
+import CodeMirror from "../common/code-mirror";
+import { HTML as IHTML } from "../editor";
+
+const HTMLStyle = styled("div")({
+  "& img": {
+    verticalAlign: "middle",
+  },
+});
 
 function getImageSrc(src: string, rootDirPath?: string) {
   const EXT_REG = /\.(jpeg|jpg|png|gif|svg|webp)(?=\?|$)/i;
@@ -50,117 +51,63 @@ function getImageSrc(src: string, rootDirPath?: string) {
 }
 
 const HTMLRoot = styled("div")({
-  position: "relative",
   overflow: "hidden",
-  "& .preview-toggle-button": {
-    position: "absolute",
-    top: 0,
-    right: 0,
-    display: "none",
-    zIndex: 1,
-  },
-  "&:hover": {
-    "& .preview-toggle-button": {
-      display: "block",
-    },
-  },
-});
-
-const CodeMirrorParent = styled("div")({
-  "& .cm-editor": {
-    maxHeight: 327,
-  },
 });
 
 export default function HTML(props: RenderElementProps) {
   const { element } = props;
-  const { value } = element as IHTML;
-
-  const rootDir = useRecoilValue(rootDirState);
-
-  const [preview, setPreview] = React.useState(true);
-
-  const handleViewChange = () => {
-    setPreview(!preview);
-  };
+  const { value, preview } = element as IHTML;
 
   const editor = useSlateStatic();
 
-  const elementRef = React.useRef<IHTML>(null);
-  // @ts-ignore
-  elementRef.current = element;
-
-  const view = React.useMemo(() => {
-    const updateListener = EditorView.updateListener.of((update) => {
-      if (update.docChanged) {
-        const value = update.state.doc.toString();
-        if (elementRef.current) {
-          const path = ReactEditor.findPath(editor, elementRef.current);
-          Transforms.setNodes(
-            editor,
-            { value },
-            {
-              at: path,
-            }
-          );
-        }
-      }
+  const rootDir = useRecoilValue(rootDirState);
+  const setContextMenu = useSetRecoilState(contextMenuState);
+  const handleContextMenu: React.MouseEventHandler<HTMLDivElement> = (
+    event
+  ) => {
+    event.preventDefault();
+    setContextMenu({
+      anchorPoint: { x: event.clientX, y: event.clientY },
+      path: ReactEditor.findPath(editor, element),
     });
-    return new EditorView({
-      state: EditorState.create({
-        doc: value,
-        // extensions: [keymap.of(defaultKeymap)],
-        extensions: [basicSetup, html(), updateListener],
-      }),
-    });
-  }, []);
-
-  const parentRef = React.useRef<HTMLDivElement>(null);
-  React.useEffect(() => {
-    const parent = parentRef.current!;
-
-    parent.appendChild(view.dom);
-
-    const stopPropagation = (e: Event) => e.stopPropagation();
-    parent.addEventListener("beforeinput", stopPropagation);
-    parent.addEventListener("keydown", stopPropagation);
-
-    return () => {
-      parent.removeChild(view.dom);
-      parent.removeEventListener("beforeinput", stopPropagation);
-      parent.removeEventListener("keydown", stopPropagation);
-    };
-  }, [parentRef.current]);
+  };
 
   return (
-    <HTMLRoot {...props.attributes} contentEditable={false}>
-      <IconButton
-        className="preview-toggle-button"
-        contentEditable={false}
-        onClick={handleViewChange}
-      >
-        {preview ? <CodeIcon /> : <PreviewIcon />}
-      </IconButton>
+    <HTMLRoot
+      {...props.attributes}
+      contentEditable={false}
+      onContextMenu={handleContextMenu}
+    >
       {preview && (
         <style-isolation>
-          {parse(DOMPurify.sanitize(value), {
-            replace: (domNode) => {
-              if (
-                domNode instanceof Element &&
-                domNode.tagName === "img" &&
-                domNode.attribs
-              ) {
-                const { src, ...other } = attributesToProps(domNode.attribs);
-                return <img src={getImageSrc(src, rootDir?.path)} {...other} />;
-              }
-            },
-          })}
+          <HTMLStyle>
+            {parse(DOMPurify.sanitize(value), {
+              replace: (domNode) => {
+                if (
+                  domNode instanceof Element &&
+                  domNode.tagName === "img" &&
+                  domNode.attribs
+                ) {
+                  const { src, ...other } = attributesToProps(domNode.attribs);
+                  return (
+                    <img src={getImageSrc(src, rootDir?.path)} {...other} />
+                  );
+                }
+              },
+            })}
+          </HTMLStyle>
         </style-isolation>
       )}
-      <CodeMirrorParent
-        ref={parentRef}
-        style={{ display: preview ? "none" : "block" }}
-      ></CodeMirrorParent>
+      <Card
+        variant="onThinAcrylic"
+        sx={{ display: preview ? "none" : "block" }}
+      >
+        <CodeMirror
+          element={element as IHTML}
+          value={value}
+          lang="html"
+        ></CodeMirror>
+      </Card>
       {props.children}
     </HTMLRoot>
   );

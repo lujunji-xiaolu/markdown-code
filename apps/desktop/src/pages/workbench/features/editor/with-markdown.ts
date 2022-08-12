@@ -1,4 +1,12 @@
-import { BaseEditor, Editor, Element, Point, Range, Text, Transforms } from "slate";
+import {
+  BaseEditor,
+  Editor,
+  Element,
+  Point,
+  Range,
+  Text,
+  Transforms,
+} from "slate";
 import { ReactEditor } from "slate-react";
 import { createParagraphElement } from "./common/element";
 
@@ -18,7 +26,9 @@ export default function withMarkdown(editor: BaseEditor & ReactEditor) {
       const match = Editor.above(editor, {
         match: (n) =>
           Element.isElement(n) &&
-          (n.type === "heading" || n.type === "blockquote" || n.type === "list"),
+          (n.type === "heading" ||
+            n.type === "blockquote" ||
+            n.type === "list"),
       });
 
       if (match) {
@@ -61,7 +71,10 @@ export default function withMarkdown(editor: BaseEditor & ReactEditor) {
   editor.insertText = (text) => {
     const [nodeEntry] = Editor.nodes(editor, {
       match: (n) =>
-        Text.isText(n) && (n.type === "emphasis" || n.type === "strong" || n.type === "inlineCode"),
+        Text.isText(n) &&
+        (n.type === "emphasis" ||
+          n.type === "strong" ||
+          n.type === "inlineCode"),
       mode: "lowest",
     });
     if (nodeEntry && editor.selection) {
