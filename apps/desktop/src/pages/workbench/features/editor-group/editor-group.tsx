@@ -65,7 +65,14 @@ export default function EditorGroup(props: EditorGroupProps) {
         onChange={updateActiveIndex}
         onClose={handleCloseTab}
       ></Tabs>
-      <Card sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
+      <Card
+        sx={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          height: "calc(100% - 31px)",
+        }}
+      >
         <CardHeader>
           <Breadcrumbs
             separator={
@@ -85,7 +92,7 @@ export default function EditorGroup(props: EditorGroupProps) {
             key={tab.file.path}
             role="tabpanel"
             hidden={activeIndex === tabIndex}
-            sx={{ display: "flex", flex: 1, width: "100%" }}
+            sx={{ display: "flex", flex: 1, width: "100%", overflow: "auto" }}
           >
             <Editor editor={tab.editor} value={tab.value} />
           </Box>
