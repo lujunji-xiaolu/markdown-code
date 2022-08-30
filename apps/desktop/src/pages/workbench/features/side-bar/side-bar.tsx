@@ -1,41 +1,26 @@
-import Card from "@/components/card";
-import SegoeFluentIcon from "@/components/segoe-fluent-icon";
-import { selectedItemIndexState } from "@/pages/workbench/atoms/layout";
-import CardHeader from "@/pages/workbench/components/card-header";
-import Explorer from "@/pages/workbench/features/explorer";
-import Box from "@mui/material/Box";
-import { styled } from "@mui/material/styles";
-import Typography from "@mui/material/Typography";
+import { activeIndexState } from "@/pages/workbench/atoms/layout";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardHeader from "@mui/material/CardHeader";
 import { useRecoilValue } from "recoil";
+import Explorer from "../explorer";
 import useDrag from "./use-drag";
 
-const SideBarRoot = styled(Card)({
-  display: "flex",
-  flexDirection: "column",
-  flexShrink: 0,
-  width: 230,
-});
-
-const SideBarContent = styled("div")({
-  flex: 1,
-  padding: 12,
-  overflowY: "auto",
-});
-
-const DragBar = styled("div")({
-  width: 4,
-  cursor: "e-resize",
-});
-
 export default function SideBar() {
-  const selectedIndex = useRecoilValue(selectedItemIndexState);
+  const activeIndex = useRecoilValue(activeIndexState);
 
   const { dragBarRef, targetRef } = useDrag(200);
 
   return (
     <>
-      <SideBarRoot ref={targetRef}>
-        <CardHeader>
+      <Card ref={targetRef} className="flex flex-col h-full">
+        <CardHeader title="Explorer" />
+        <CardContent className="flex-1 overflow-auto">
+          <div role="tabpanel" hidden={activeIndex !== 0}>
+            <Explorer />
+          </div>
+        </CardContent>
+        {/* <CardHeader>
           <Typography variant="body2" sx={{ fontWeight: "bold" }}>
             Explorer
           </Typography>
@@ -49,9 +34,9 @@ export default function SideBar() {
           >
             <Explorer />
           </Box>
-        </SideBarContent>
-      </SideBarRoot>
-      <DragBar ref={dragBarRef} />
+        </SideBarContent> */}
+      </Card>
+      <div ref={dragBarRef} className="w-1 cursor-e-resize" />
     </>
   );
 }

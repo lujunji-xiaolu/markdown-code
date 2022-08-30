@@ -1,5 +1,5 @@
-import ContextMenuBase from "@/components/context-menu";
-import MenuItem from "@/components/menu-item";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/Menu";
 import { useMenuState } from "@szhsin/react-menu";
 import { useEffect } from "react";
 import { useRecoilValue } from "recoil";
@@ -40,9 +40,8 @@ export default function ContextMenu() {
   };
 
   return (
-    <ContextMenuBase
-      {...menuProps}
-      anchorPoint={state?.anchorPoint ?? DEFAULT_ANCHOR_POINT}
+    <Menu
+      anchorPosition={state?.anchorPoint ?? DEFAULT_ANCHOR_POINT}
       onClose={handleClose}
     >
       {element && (
@@ -50,6 +49,6 @@ export default function ContextMenu() {
           {element.preview ? "Edit" : "Preview"}
         </MenuItem>
       )}
-    </ContextMenuBase>
+    </Menu>
   );
 }

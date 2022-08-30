@@ -1,0 +1,21 @@
+%typography-caption {
+  font-family: "Segoe UI Variable";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+}
+.typography-caption {
+  @extend %typography-caption;
+}
+
+%typography-body {
+  font-family: "Segoe UI Variable";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+}
+.typography-body {
+  @extend %typography-body;
+}

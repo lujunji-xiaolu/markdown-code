@@ -1,19 +1,17 @@
-import "@/App.css";
 import StoreProvider from "@/features/store-provider";
-import { AutoChangeTheme } from "@/features/theme";
+import ThemeProvider from "@/features/theme-provider";
 import Workbench from "@/pages/workbench/workbench";
 import CssBaseline from "@mui/material/CssBaseline";
 import { RecoilRoot } from "recoil";
-import "./App.css";
 
 function App() {
   return (
     <RecoilRoot>
       <StoreProvider>
-        <AutoChangeTheme>
+        <ThemeProvider>
           <CssBaseline />
           <Workbench />
-        </AutoChangeTheme>
+        </ThemeProvider>
       </StoreProvider>
     </RecoilRoot>
   );

@@ -5,6 +5,6 @@ export const contextMenuState = atom<{
   anchorPoint: { x: number; y: number };
   path: Path;
 } | null>({
-  key: "contextMenu",
+  key: "editor-contextMenu",
   default: null,
 });

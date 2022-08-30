@@ -1,11 +1,7 @@
 {
-  "cSpell.words": [
-    "asar",
-    "clsx",
-    "hotwatch",
-    "tauri",
-    "unlisten",
-    "unwatch",
-    "walkdir"
+  "cSpell.words": [],
+  "cssvar.files": [],
+  "rust-analyzer.linkedProjects": [
+    "${workspaceFolder}/apps/desktop/src-tauri/Cargo.toml"
   ]
 }

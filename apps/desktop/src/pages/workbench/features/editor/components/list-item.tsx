@@ -1,8 +1,13 @@
-import Checkbox from "@/components/checkbox";
+import Checkbox from "@mui/material/checkbox";
 import { styled } from "@mui/material/styles";
 import isBoolean from "lodash/isBoolean";
 import { Transforms } from "slate";
-import { ReactEditor, RenderElementProps, useFocused, useSlateStatic } from "slate-react";
+import {
+  ReactEditor,
+  RenderElementProps,
+  useFocused,
+  useSlateStatic,
+} from "slate-react";
 import { ListItemGfm } from "../spec/github-flavored-markdown";
 
 const ListItemRoot = styled("li")({});

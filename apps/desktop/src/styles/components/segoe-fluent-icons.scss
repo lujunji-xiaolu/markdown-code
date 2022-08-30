@@ -1,0 +1,25 @@
+.segoe-fluent-icons {
+  font-family: "Segoe Fluent Icons";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 12px;
+}
+.ChevronDownMed::before {
+  content: "\e972";
+}
+.ChevronRightMed::before {
+  content: "\e974";
+}
+.Search::before {
+  content: "\e721";
+}
+.More::before {
+  content: "\e712";
+}
+.Clear::before {
+  content: "\e894";
+}
+.AcceptMedium::before {
+  content: "\f78c";
+}

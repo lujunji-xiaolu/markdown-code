@@ -1,0 +1,16 @@
+.flyout {
+  border: 1px solid var(--surface-stroke-default);
+  border-radius: 7px;
+  box-shadow: 0px 8px 16px var(--flyout-shadow);
+  background: url("./NoiseAsset_256.png"), var(--acrylic-background-default);
+  background-blend-mode: normal, luminosity;
+  backdrop-filter: blur(60px);
+  &.accent-colored {
+    background: url("./NoiseAsset_256.png"),
+      var(--accent-acrylic-background-default);
+    background-blend-mode: normal, color, luminosity;
+  }
+  &.fallback {
+    background: var(--flyout-base);
+  }
+}

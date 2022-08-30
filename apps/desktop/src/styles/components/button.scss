@@ -1,0 +1,41 @@
+@use 'typography';
+
+.button {
+  @extend typography.typography-body;
+  padding: 6px 47.5px;
+  border-radius: 4px;
+  &.accent {
+    color: var(--text-on-accent-primary);
+    background-color: var(--accent-default);
+    &:hover {
+      background-color: var(--accent-secondary);
+    }
+    &:active {
+      color: var(--text-on-accent-secondary);
+      background-color: var(--accent-tertiary);
+    }
+    &:disabled {
+      color: var(--text-on-accent-disabled);
+      background-color: var(--accent-disabled);
+    }
+  }
+  &.standard {
+    color: var(--text-primary);
+    background-color: var(--control-default);
+    border: 1px solid;
+    border-image-source: var(--elevation-control-border);
+    &:hover {
+      background-color: var(--control-secondary);
+    }
+    &:active {
+      color: var(--text-secondary);
+      background-color: var(--control-tertiary);
+      border: 1px solid var(--control-stroke-default);
+    }
+    &:disabled {
+      color: var(--text-disabled);
+      background-color: var(--control-disabled);
+      border: 1px solid var(--control-stroke-default);
+    }
+  }
+}

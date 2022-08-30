@@ -4,7 +4,7 @@ import * as React from "react";
 import { useSetRecoilState } from "recoil";
 import { BaseEditor, Descendant } from "slate";
 import { Editable, ReactEditor, Slate } from "slate-react";
-import ContextMenu from "./features/context-menu";
+// import ContextMenu from "./features/context-menu";
 import handleOnKeyDown from "./handle-on-key-down";
 import HoveringToolbar from "./features/hovering-toolbar";
 import renderElement from "./render/render-element";
@@ -72,7 +72,7 @@ export default function MarkdownEditor(props: MarkdownEditorProps) {
   return (
     <Slate editor={editor} value={value}>
       <HoveringToolbar />
-      <ContextMenu />
+      {/* <ContextMenu /> */}
       <StyledEditable
         renderElement={renderElement}
         renderLeaf={renderLeaf}

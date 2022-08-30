@@ -1,5 +1,5 @@
-import Card from "@/components/card";
-import Select from "@/components/select";
+import Paper from "@mui/material/Paper";
+import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { SelectChangeEvent } from "@mui/material/Select";
 import { Transforms } from "slate";
@@ -42,7 +42,7 @@ export default function Code(props: RenderElementProps) {
   };
 
   return (
-    <Card variant="onThinAcrylic" {...props.attributes} contentEditable={false}>
+    <Paper {...props.attributes} contentEditable={false}>
       <Select
         contentEditable={false}
         value={lang ?? ""}
@@ -65,6 +65,6 @@ export default function Code(props: RenderElementProps) {
         lang={lang ?? "javascript"}
       ></CodeMirror>
       {props.children}
-    </Card>
+    </Paper>
   );
 }

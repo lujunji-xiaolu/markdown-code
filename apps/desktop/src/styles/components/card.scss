@@ -1,0 +1,17 @@
+.card {
+  border: 1px solid var(--card-stroke-default);
+  border-radius: 7px;
+  box-shadow: 0px 2px 4px var(--card-rest-shadow);
+  &:hover {
+    box-shadow: 0px 2px 4px var(--card-hover-shadow);
+  }
+  &:active {
+    box-shadow: none;
+  }
+  &.standard {
+    background-color: var(--card-background-default);
+  }
+  &.onThinAcrylic {
+    background-color: var(--card-background-on-thin-acrylic);
+  }
+}

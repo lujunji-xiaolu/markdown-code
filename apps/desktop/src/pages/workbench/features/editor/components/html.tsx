@@ -1,4 +1,4 @@
-import Card from "@/components/card";
+import Paper from "@mui/material/Paper";
 import { rootDirState } from "@/pages/workbench/atoms/explorer";
 import "@/pages/workbench/components/style-isolation";
 import { styled } from "@mui/material/styles";
@@ -98,16 +98,13 @@ export default function HTML(props: RenderElementProps) {
           </HTMLStyle>
         </style-isolation>
       )}
-      <Card
-        variant="onThinAcrylic"
-        sx={{ display: preview ? "none" : "block" }}
-      >
+      <Paper sx={{ display: preview ? "none" : "block" }}>
         <CodeMirror
           element={element as IHTML}
           value={value}
           lang="html"
         ></CodeMirror>
-      </Card>
+      </Paper>
       {props.children}
     </HTMLRoot>
   );

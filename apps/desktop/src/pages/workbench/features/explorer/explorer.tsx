@@ -1,16 +1,15 @@
-import { createEditor, deserialize } from "@/pages/workbench/features/editor";
+// import { createEditor, deserialize } from "@/pages/workbench/features/editor";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { TreeView } from "@mui/lab";
 import TreeItem from "@mui/lab/TreeItem";
-import { invoke } from "@tauri-apps/api/tauri";
+import TreeView from "@mui/lab/TreeView";
 import { appWindow } from "@tauri-apps/api/window";
 import * as React from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { editorGroupsState } from "../../atoms/editor-group";
 import { rootDirState } from "../../atoms/explorer";
 import OpenFolder from "./open-folder";
-import { Dir, File } from "./types";
+import { Dir } from "./types";
 import { findParentDir } from "./utils";
 
 export default function Explorer() {
@@ -19,6 +18,7 @@ export default function Explorer() {
 
   React.useEffect(() => {
     let rootDir: Dir | null = null;
+    let count = 0;
     const unlisten = appWindow.listen("init-root-dir", (event) => {
       const { path, file_name, is_file, components, ready } = event.payload as {
         path: string;
@@ -31,6 +31,7 @@ export default function Explorer() {
         setRootDir(rootDir);
       } else if (components.length === 0) {
         rootDir = {
+          id: count++,
           path,
           fileName: file_name,
           dirs: [],
@@ -41,12 +42,14 @@ export default function Explorer() {
         const parentDir = findParentDir(rootDir!, components);
         if (is_file) {
           parentDir.files.push({
+            id: count++,
             path,
             fileName: file_name,
             components,
           });
         } else {
           parentDir.dirs.push({
+            id: count++,
             path,
             fileName: file_name,
             components,
@@ -63,64 +66,70 @@ export default function Explorer() {
 
   if (rootDir === null) return <OpenFolder />;
 
-  const pushTab = async (file: File) => {
-    try {
-      const content = await invoke<string>("read_to_string", {
-        path: file.path,
-      });
-      setEditorGroups((oldEditorGroups) => {
-        if (
-          oldEditorGroups.groups[oldEditorGroups.currentGroupIndex] ===
-          undefined
-        ) {
-          oldEditorGroups.groups[oldEditorGroups.currentGroupIndex] = {
-            tabs: [],
-            activeIndex: 0,
-          };
-        }
+  // const pushTab = async (file: File) => {
+  //   try {
+  //     const content = await invoke<string>("read_to_string", {
+  //       path: file.path,
+  //     });
+  //     setEditorGroups((oldEditorGroups) => {
+  //       if (
+  //         oldEditorGroups.groups[oldEditorGroups.currentGroupIndex] ===
+  //         undefined
+  //       ) {
+  //         oldEditorGroups.groups[oldEditorGroups.currentGroupIndex] = {
+  //           tabs: [],
+  //           activeIndex: 0,
+  //         };
+  //       }
 
-        const oldEditorGroup =
-          oldEditorGroups.groups[oldEditorGroups.currentGroupIndex];
+  //       const oldEditorGroup =
+  //         oldEditorGroups.groups[oldEditorGroups.currentGroupIndex];
 
-        oldEditorGroup.tabs.push({
-          editor: createEditor(),
-          value: deserialize(content),
-          file,
-        });
+  //       oldEditorGroup.tabs.push({
+  //         editor: createEditor(),
+  //         value: deserialize(content),
+  //         file,
+  //       });
 
-        return { ...oldEditorGroups };
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const renderFile = (dir: Dir) =>
-    dir.files.map((file) => (
-      <TreeItem
-        key={file.path}
-        nodeId={file.path}
-        label={file.fileName}
-        onClick={() => pushTab(file)}
-      />
-    ));
+  //       return { ...oldEditorGroups };
+  //     });
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   const renderDir = (dir: Dir) => (
     <TreeItem key={dir.path} nodeId={dir.path} label={dir.fileName}>
       {dir.dirs.map((subDir) => renderDir(subDir))}
-      {renderFile(dir)}
+      {dir.files.map((subFile) => (
+        <TreeItem
+          key={subFile.path}
+          nodeId={subFile.path}
+          label={subFile.fileName}
+        />
+      ))}
     </TreeItem>
   );
 
   return (
-    <TreeView
-      aria-label="file system navigator"
-      defaultCollapseIcon={<ExpandMoreIcon />}
-      defaultExpandIcon={<ChevronRightIcon />}
-      sx={{ overflowX: "hidden", overflowY: "auto" }}
-      // sx={{ height: 240, flexGrow: 1, maxWidth: 400, overflowY: "auto" }}
-    >
-      {renderDir(rootDir)}
-    </TreeView>
+    <div className="flex flex-col">
+      <div>
+        <span className="segoe-fluent-icons ChevronRightMed"></span>
+        <span className="cursor-pointer select-none uppercase">
+          open editors
+        </span>
+      </div>
+      <div>
+        <span>{rootDir.fileName}</span>
+      </div>
+      <TreeView
+        aria-label="file system navigator"
+        defaultCollapseIcon={<ExpandMoreIcon />}
+        defaultExpandIcon={<ChevronRightIcon />}
+      >
+        {renderDir(rootDir)}
+      </TreeView>
+      {/* <ContextMenu></ContextMenu> */}
+    </div>
   );
 }
